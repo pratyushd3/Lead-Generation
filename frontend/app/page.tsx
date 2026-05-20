@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { api, fmtMoney } from "@/lib/api";
-import { StatusBadge } from "@/components/badges";
+import { api, fmtMoney } from "../lib/api";
+import { StatusBadge } from "../components/badges";
 
 export default async function DashboardPage() {
   const [icps, leads, orders] = await Promise.all([

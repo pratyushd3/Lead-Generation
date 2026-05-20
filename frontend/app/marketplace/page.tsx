@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { api, fmtMoney, priceForScore } from "@/lib/api";
-import { ScoreBadge, StatusBadge } from "@/components/badges";
+import { api, fmtMoney, priceForScore } from "../../lib/api";
+import { ScoreBadge, StatusBadge } from "../../components/badges";
 import { BuyButton } from "./buy-button";
 
 export default async function MarketplacePage() {

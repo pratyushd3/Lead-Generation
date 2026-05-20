@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { api } from "@/lib/api";
-import { ScoreBadge, StatusBadge } from "@/components/badges";
+import { api } from "../../lib/api";
+import { ScoreBadge, StatusBadge } from "../../components/badges";
 
 export default async function LeadsPage({
   searchParams,

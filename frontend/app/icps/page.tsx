@@ -1,4 +1,4 @@
-import { api } from "@/lib/api";
+import { api } from "../../lib/api";
 import { NewIcpForm } from "./new-icp-form";
 import { RunPipelineButton } from "./run-pipeline-button";
 

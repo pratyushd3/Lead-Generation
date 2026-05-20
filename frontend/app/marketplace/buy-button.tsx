@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { api } from "@/lib/api";
+import { api } from "../../lib/api";
 
 export function BuyButton({ leadId, buyerId }: { leadId: number; buyerId: number }) {
   const router = useRouter();

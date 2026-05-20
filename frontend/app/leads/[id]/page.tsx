@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { api } from "@/lib/api";
-import { ScoreBadge, StatusBadge } from "@/components/badges";
+import { api } from "../../../lib/api";
+import { ScoreBadge, StatusBadge } from "../../../components/badges";
 import { SendOutreachButton } from "./send-outreach-button";
 
 export default async function LeadDetailPage({ params }: { params: { id: string } }) {
