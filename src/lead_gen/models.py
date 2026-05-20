@@ -55,7 +55,15 @@ class Lead(Base):
     score_reasoning: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     outreach_email: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     outreach_followup: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    status: Mapped[str] = mapped_column(String(40), default="new")  # new|enriched|scored|ready|sold
+    # Delivery tracking
+    message_id: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+    sent_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    delivered_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    opened_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    replied_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    bounced_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    # new|enriched|scored|ready|sent|delivered|opened|replied|bounced|sold
+    status: Mapped[str] = mapped_column(String(40), default="new")
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
 
@@ -66,6 +74,11 @@ class Order(Base):
     buyer_id: Mapped[int] = mapped_column(ForeignKey("buyers.id"))
     lead_id: Mapped[int] = mapped_column(ForeignKey("leads.id"))
     price_cents: Mapped[int] = mapped_column(Integer, default=0)
+    # Stripe / payments tracking
+    payment_session_id: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+    payment_provider: Mapped[Optional[str]] = mapped_column(String(40), nullable=True)
+    payment_status: Mapped[str] = mapped_column(String(40), default="pending")  # pending|paid|failed|refunded
+    paid_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
 
@@ -117,6 +130,16 @@ class LeadFull(LeadOut):
     enrichment: Optional[dict]
     outreach_email: Optional[str]
     outreach_followup: Optional[str]
+    message_id: Optional[str] = None
+    sent_at: Optional[datetime] = None
+    delivered_at: Optional[datetime] = None
+    opened_at: Optional[datetime] = None
+    replied_at: Optional[datetime] = None
+    bounced_at: Optional[datetime] = None
+
+
+class SendOutreachRequest(BaseModel):
+    use_followup: bool = False
 
 
 class PipelineRequest(BaseModel):
@@ -127,3 +150,18 @@ class PipelineRequest(BaseModel):
 class OrderIn(BaseModel):
     buyer_id: int
     lead_id: int
+
+
+class CheckoutRequest(BaseModel):
+    buyer_id: int
+    lead_id: int
+    success_url: Optional[str] = None
+    cancel_url: Optional[str] = None
+
+
+class CheckoutResponse(BaseModel):
+    order_id: int
+    session_id: Optional[str]
+    url: Optional[str]
+    payment_status: str
+    provider: str
