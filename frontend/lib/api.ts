@@ -7,7 +7,8 @@ import type {
   Order,
 } from "./types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+// Use internal API routes (same origin — no CORS!)
+const API_URL = "";
 
 async function request<T>(
   path: string,
@@ -31,13 +32,13 @@ async function request<T>(
 }
 
 export const api = {
-  listBuyers: () => request<Buyer[]>("/buyers"),
-  listIcps: () => request<ICP[]>("/icps"),
+  listBuyers: () => request<Buyer[]>("/api/buyers"),
+  listIcps: () => request<ICP[]>("/api/icps"),
   createIcp: (body: Omit<ICP, "id">) =>
-    request<ICP>("/icps", { method: "POST", body: JSON.stringify(body) }),
+    request<ICP>("/api/icps", { method: "POST", body: JSON.stringify(body) }),
 
   runPipeline: (icp_id: number, max_leads = 5) =>
-    request<Lead[]>("/pipeline/run", {
+    request<Lead[]>("/api/pipeline/run", {
       method: "POST",
       body: JSON.stringify({ icp_id, max_leads }),
     }),
@@ -47,18 +48,18 @@ export const api = {
     if (params.icp_id !== undefined) q.set("icp_id", String(params.icp_id));
     if (params.min_score !== undefined) q.set("min_score", String(params.min_score));
     const qs = q.toString();
-    return request<Lead[]>(`/leads${qs ? `?${qs}` : ""}`);
+    return request<Lead[]>(`/api/leads${qs ? `?${qs}` : ""}`);
   },
-  getLead: (id: number) => request<LeadFull>(`/leads/${id}`),
+  getLead: (id: number) => request<LeadFull>(`/api/leads/${id}`),
   sendOutreach: (id: number, useFollowup = false) =>
-    request<LeadFull>(`/leads/${id}/send`, {
+    request<LeadFull>(`/api/leads/${id}/send`, {
       method: "POST",
       body: JSON.stringify({ use_followup: useFollowup }),
     }),
 
-  listOrders: () => request<Order[]>("/marketplace/orders"),
+  listOrders: () => request<Order[]>("/api/marketplace/orders"),
   checkout: (buyer_id: number, lead_id: number) =>
-    request<CheckoutResponse>("/marketplace/checkout", {
+    request<CheckoutResponse>("/api/marketplace/checkout", {
       method: "POST",
       body: JSON.stringify({ buyer_id, lead_id }),
     }),
